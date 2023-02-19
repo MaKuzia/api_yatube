@@ -7,7 +7,7 @@ from .serializers import (CommentSerializer,
                           GroupSerializer,
                           PostSerializer,
                           UserSerializer
-                        )
+                          )
 
 
 class PostViewSet(viewsets.ModelViewSet):

@@ -1,13 +1,6 @@
-from posts.models import Comment, Group, Post, User
 from rest_framework import serializers
 
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'cats')
-        ref_name = 'ReadOnlyUsers'
+from posts.models import Comment, Group, Post
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -18,22 +11,22 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault()
-    )
-    post = serializers.PrimaryKeyRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault()
+    author = serializers.SlugRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault(),
+        slug_field='username'
     )
 
     class Meta:
         model = Comment
         fields = ('id', 'author', 'post', 'text', 'created')
+        read_only_fields = ('post',)
 
 
 class PostSerializer(serializers.ModelSerializer):
-    group = serializers.StringRelatedField(required=False)
-    author = serializers.StringRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault()
+    group = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
+    author = serializers.SlugRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault(),
+        slug_field='username'
     )
 
     class Meta:
